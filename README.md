@@ -1,6 +1,12 @@
 # Fireflies
 
+_Fireflies_ is an interactive visualization project in which the user can manipulate the movement of boids (fireflies) by shining with colorful lights.
+
+![screenshot](https://github.com/mc0239/fireflies/raw/master/screenshot.jpg)
+
 ## Running the project
+
+### Visualization
 
 To run the visualization (assuming under Windows):
 
@@ -9,6 +15,10 @@ cd java-visualization/
 gradlew.bat build
 gradlew.bat run
 ```
+
+Note: interaction with the visualization is possible by holding the left or right mouse button. It's also possible to make a screenshot with `P` key and exit the visualization by pressing `ESC`.
+
+### Marker detection
 
 To run ArUco marker detection (assuming python 3 installed):
 

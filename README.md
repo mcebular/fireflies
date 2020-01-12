@@ -8,6 +8,8 @@ _Fireflies_ is an interactive visualization project in which the user can manipu
 
 ### Visualization
 
+Requirements: Java 7+
+
 To run the visualization (assuming under Windows):
 
 ```bash
@@ -20,7 +22,9 @@ Note: interaction with the visualization is possible by holding the left or righ
 
 ### Marker detection
 
-To run ArUco marker detection (assuming python 3 installed):
+Requirements: Python 3.7
+
+To run ArUco marker detection:
 
 ```
 cd python-detect/

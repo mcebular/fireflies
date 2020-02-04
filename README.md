@@ -31,6 +31,10 @@ cd python-detect/
 python detect.py
 ```
 
+To detect markers, it's best to print them. You can generate markers with an online generator (i.e. http://chev.me/arucogen/). Make sure your selected dictionary is **4x4 (250)**).
+
+You can test the detection by opening the website on your phone and pointing the phone's screen (with the marker) at the camera.
+
 Visualization and detection processes are running independently of each other (i.e. you can run visualization without the detection).
 Processes communicate between each other using a web socket, which opens on port 12001.
 

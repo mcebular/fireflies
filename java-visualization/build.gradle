@@ -17,7 +17,7 @@ buildscript {
 
 allprojects {
 
-    version = '1.0'
+    version = '0.0.1'
     ext {
         appName = "fireflies"
         gdxVersion = '1.9.10'

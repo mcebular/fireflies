@@ -3,12 +3,16 @@ package net.iamsilver.fireflies;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import net.iamsilver.fireflies.drawable.Colors;
 import net.iamsilver.fireflies.drawable.Firefly;
 import net.iamsilver.fireflies.drawable.FireflyManager;
@@ -22,6 +26,9 @@ public class Fireflies extends ApplicationAdapter {
 
 	public static final int BOID_COUNT = 200;
 
+	private Camera camera;
+	private Viewport viewport;
+
 	SpriteBatch spriteBatch;
 	ShapeRenderer shapeRenderer;
 	BitmapFont font;
@@ -34,8 +41,15 @@ public class Fireflies extends ApplicationAdapter {
 
 	@Override
 	public void create () {
+		camera = new OrthographicCamera();
+		viewport = new ScreenViewport(camera);
+		viewport.apply();
+
+		camera.position.set(camera.viewportWidth/2, camera.viewportHeight/2, 0);
+
 		spriteBatch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
+		shapeRenderer.setProjectionMatrix(camera.combined);
 		font = new BitmapFont();
 
 		lightSourceManager = new LightSourceManager();
@@ -75,13 +89,16 @@ public class Fireflies extends ApplicationAdapter {
 			flock.randomize();
 			lightSourceManager.randomizeColors();
 
-			// TODO: buffer should actually be properly disposed!!!
+			buffer.dispose();
 			buffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		}
 
 		if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
 			// id defines light color, thus we define negative id for a color we want for a mouse
 			// (lights from external sources, i.e. markers, should provide positive ids!)
+
+			// Note: below transformation of mouse coordinates is not necessary since ScreenViewport is used!
+			// Vector3 mouseCoordinates = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(),0));
 			lightSourceManager.receivedLight(-5, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 		} else if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
 			lightSourceManager.receivedLight(-9, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
@@ -96,12 +113,17 @@ public class Fireflies extends ApplicationAdapter {
 
 	@Override
 	public void render () {
+		camera.update();
+		spriteBatch.setProjectionMatrix(camera.combined);
+		shapeRenderer.setProjectionMatrix(camera.combined);
+
 		update();
 
 		Gdx.gl.glClearColor(Colors.BACKGROUND.r, Colors.BACKGROUND.g, Colors.BACKGROUND.b, Colors.BACKGROUND.a);
 //		Gdx.gl.glClearColor(1,1,1,1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		viewport.apply();
 		buffer.begin();
 
 		// -----
@@ -163,7 +185,16 @@ public class Fireflies extends ApplicationAdapter {
 		spriteBatch.end();
 		// -----
 	}
-	
+
+	@Override
+	public void resize(int width, int height) {
+		viewport.update(width,height);
+		camera.position.set(camera.viewportWidth/2,camera.viewportHeight/2,0);
+
+		buffer.dispose();
+		buffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+	}
+
 	@Override
 	public void dispose () {
 		socket.dispose();

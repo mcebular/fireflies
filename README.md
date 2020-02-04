@@ -31,6 +31,10 @@ cd python-detect/
 python detect.py
 ```
 
+To detect markers, it's best to print them. You can generate markers with an online generator (i.e. http://chev.me/arucogen/). Make sure your selected dictionary is **4x4 (250)**).
+
+You can test the detection by opening the website on your phone and pointing the phone's screen (with the marker) at the camera.
+
 Visualization and detection processes are running independently of each other (i.e. you can run visualization without the detection).
 Processes communicate between each other using a web socket, which opens on port 12001.
 
@@ -38,8 +42,9 @@ Processes communicate between each other using a web socket, which opens on port
 
 If one was to build upon this project, there's a couple of things that should be resolved first (a list of TODOs):
 
-- Python detect script does not terminate propery (stops than hangs).
 - Visualization breaks on window resize (wrapping around borders and light source positions do not work properly)
+   - This can be bypassed by modifying width/height/fullscreen parameters before running the project, in file `java-visualization\desktop\src\net\iamsilver\fireflies\desktop\DesktopLauncher.java`
+- Python detect script does not terminate propery (stops than hangs).
 - Light source changes and lightness rework (increase is done on socket receive, decrease is done every update cycle)
 - Make visualization parameters external (i.e. settable via input arguments) such as number of boids, drawing threshold, maximum boid speed and force, parameters of the flocking, etc.
 - Better define and document the communication between the detection and visualization processes.
